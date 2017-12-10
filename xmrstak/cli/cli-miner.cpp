@@ -65,6 +65,7 @@ void help()
 	cout<<"  -h, --help            show this help"<<endl;
 	cout<<"  -v, --version         show version number"<<endl;
 	cout<<"  -V, --version-long    show long version number"<<endl;
+	cout<<"  --benchmark           run the benchmark + tests"<<endl;
 	cout<<"  -c, --config FILE     common miner configuration file"<<endl;
 #ifdef _WIN32
 	cout<<"  --noUAC               disable the UAC dialog"<<endl;
@@ -160,8 +161,8 @@ std::string get_multipool_entry(bool& final)
 
 	final = !read_yes_no("- Do you want to add another pool? (y/n)");
 
-	return "\t{\"pool_address\" : \"" + pool +"\", \"wallet_address\" : \"" + userName +  "\", \"pool_password\" : \"" + 
-		passwd + "\", \"use_nicehash\" : " + bool_to_str(nicehash) + ", \"use_tls\" : " + bool_to_str(tls) + 
+	return "\t{\"pool_address\" : \"" + pool +"\", \"wallet_address\" : \"" + userName +  "\", \"pool_password\" : \"" +
+		passwd + "\", \"use_nicehash\" : " + bool_to_str(nicehash) + ", \"use_tls\" : " + bool_to_str(tls) +
 		", \"tls_fingerprint\" : \"\", \"pool_weight\" : " + std::to_string(pool_weight) + " },\n";
 }
 
@@ -186,7 +187,7 @@ void do_guided_config()
 	configEditor configTpl{};
 	configTpl.set(std::string(tpl));
 	bool prompted = false;
-	
+
 	auto& currency = params::inst().currency;
 	if(currency.empty())
 	{
@@ -203,7 +204,7 @@ void do_guided_config()
 			std::cout<<"- Currency: 'monero' or 'aeon'"<<std::endl;
 			std::cin >> tmp;
 			std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-		} 
+		}
 		currency = tmp;
 	}
 
@@ -276,7 +277,7 @@ void do_guided_config()
 		std::cout << "Miner will mine mostly at the pool with the highest weight, unless the pool fails." << std::endl;
 		std::cout << "Weight must be an integer larger than 0." << std::endl;
 		std::cout << "- Please enter a weight for this pool: "<<std::endl;
-		
+
 		while(!(std::cin >> pool_weight) || pool_weight <= 0)
 		{
 			std::cin.clear();
@@ -288,8 +289,8 @@ void do_guided_config()
 		pool_weight = 1;
 
 	std::string pool_table;
-	pool_table += "\t{\"pool_address\" : \"" + pool +"\", \"wallet_address\" : \"" + userName +  "\", \"pool_password\" : \"" + 
-		passwd + "\", \"use_nicehash\" : " + bool_to_str(nicehash) + ", \"use_tls\" : " + bool_to_str(tls) + 
+	pool_table += "\t{\"pool_address\" : \"" + pool +"\", \"wallet_address\" : \"" + userName +  "\", \"pool_password\" : \"" +
+		passwd + "\", \"use_nicehash\" : " + bool_to_str(nicehash) + ", \"use_tls\" : " + bool_to_str(tls) +
 		", \"tls_fingerprint\" : \"\", \"pool_weight\" : " + std::to_string(pool_weight) + " },\n";
 
 	if(multipool)
@@ -323,14 +324,14 @@ void UACDialog(const std::string& binaryName, std::string& args)
 		shExInfo.cbSize = sizeof(shExInfo);
 		shExInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
 		shExInfo.hwnd = 0;
-		shExInfo.lpVerb = "runas";     
+		shExInfo.lpVerb = "runas";
 		shExInfo.lpFile = binaryName.c_str();
 		// disable UAC dialog (else the miner will go into a infinite loop)
 		shExInfo.lpParameters = args.c_str();
 		shExInfo.lpDirectory = 0;
 		shExInfo.nShow = SW_SHOW;
 		shExInfo.hInstApp = 0;
-		
+
 		if(ShellExecuteEx(&shExInfo))
 		{
 			printer::inst()->print_msg(L0,
@@ -399,13 +400,20 @@ int main(int argc, char *argv[])
 			win_exit();
 			return 0;
 		}
-		else if(opName.compare("-V") == 0 || opName.compare("--version-long") == 0)
+		if(opName.compare("-V") == 0 || opName.compare("--version-long") == 0)
 		{
 			std::cout<< "Version: " << get_version_str() << std::endl;
 			win_exit();
 			return 0;
 		}
-		else if(opName.compare("--noCPU") == 0)
+		if(opName.compare("--benchmark") == 0)
+		{
+			do_benchmark();
+			win_exit(0);
+			return 0;
+		}
+
+		if(opName.compare("--noCPU") == 0)
 		{
 			params::inst().useCPU = false;
 		}
@@ -562,7 +570,7 @@ int main(int argc, char *argv[])
 		UACDialog(argv[0], minerArgs);
 	}
 #endif
-	
+
 	// check if we need a guided start
 	if(!configEditor::file_exist(params::inst().configFile))
 		do_guided_config();
