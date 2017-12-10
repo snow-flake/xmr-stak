@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run:
           name: docker build
-          command: ./scripts/build_xmr-stak_docker/build_xmr-stak_docker.sh
+          command: ./scripts/build_xmr-stak_docker/circle_xmr-stak_docker.sh
       - run:
           name: Print the Current Time
           command: date
