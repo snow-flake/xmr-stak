@@ -10,7 +10,7 @@ jobs:
           command: ./scripts/build_xmr-stak_docker/circle_xmr-stak_docker.sh
       - run:
           name: run the benchmarks
-          command: ./bin/xmr-stak --benchark
+          command: ./bin/xmr-stak --benchmark
       - run:
           name: Print the Current Time
           command: date
