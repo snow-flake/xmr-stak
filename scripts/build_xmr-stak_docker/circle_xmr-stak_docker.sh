@@ -17,5 +17,5 @@ wget -c https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda
 chmod a+x cuda_*_linux-run;
 ./cuda_*_linux-run --silent --toolkit ;
 
-cmake -DCUDA_ENABLE=ON -DOpenCL_ENABLE=OFF .;
+cmake -DCUDA_ENABLE=OFF -DOpenCL_ENABLE=OFF -DMICROHTTPD_ENABLE=OFF -DCMAKE_LINK_STATIC=ON .;
 make;
