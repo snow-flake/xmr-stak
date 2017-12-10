@@ -2,12 +2,12 @@ version: 2
 jobs:
   build:
     docker:
-      - image: debian:stretch
+      - image: ubuntu:16.04
     steps:
       - checkout
       - run:
-          name: Greeting
-          command: echo Hello, world.
+          name: docker build
+          command: ./scripts/build_xmr-stak_docker/build_xmr-stak_docker.sh
       - run:
           name: Print the Current Time
           command: date
