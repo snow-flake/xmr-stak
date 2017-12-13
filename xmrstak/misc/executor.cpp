@@ -35,7 +35,6 @@
 #include "xmrstak/misc/console.hpp"
 #include "xmrstak/donate-level.hpp"
 #include "xmrstak/version.hpp"
-#include "xmrstak/http/webdesign.hpp"
 
 #include <thread>
 #include <string>

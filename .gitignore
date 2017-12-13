@@ -20,3 +20,7 @@ xmr-stak.kdev4
 
 .DS_Store
 .idea
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
