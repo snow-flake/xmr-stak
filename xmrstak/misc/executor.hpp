@@ -89,16 +89,6 @@ private:
 
 	void connection_report(std::string &out);
 
-	void http_hashrate_report(std::string &out);
-
-	void http_result_report(std::string &out);
-
-	void http_connection_report(std::string &out);
-
-	void http_json_report(std::string &out);
-
-	void http_report(ex_event_name ev);
-
 	void print_report(ex_event_name ev);
 
 	std::string *pHttpString = nullptr;
