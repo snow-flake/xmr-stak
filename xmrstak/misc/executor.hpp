@@ -183,7 +183,7 @@ private:
 
 	void connect_to_pools(std::list<jpsock *> &eval_pools);
 
-	bool get_live_pools(std::vector<jpsock *> &eval_pools, bool is_dev);
+	bool get_live_pools(std::vector<jpsock *> &eval_pools);
 
 	void eval_pool_choice();
 
