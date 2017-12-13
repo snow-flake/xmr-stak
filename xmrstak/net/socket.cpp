@@ -28,6 +28,7 @@
 #include "xmrstak/misc/executor.hpp"
 
 #ifndef CONF_NO_TLS
+
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/opensslconf.h>
@@ -37,14 +38,12 @@
 #endif
 #endif
 
-plain_socket::plain_socket(jpsock* err_callback) : pCallback(err_callback)
-{
+plain_socket::plain_socket(jpsock *err_callback) : pCallback(err_callback) {
 	hSocket = INVALID_SOCKET;
 	pSockAddr = nullptr;
 }
 
-bool plain_socket::set_hostname(const char* sAddr)
-{
+bool plain_socket::set_hostname(const char *sAddr) {
 	char sAddrMb[256];
 	char *sTmp, *sPort;
 
@@ -55,19 +54,19 @@ bool plain_socket::set_hostname(const char* sAddr)
 	memcpy(sAddrMb, sAddr, ln);
 	sAddrMb[ln] = '\0';
 
-	if ((sTmp = strstr(sAddrMb, "//")) != nullptr)
-	{
+	if ((sTmp = strstr(sAddrMb, "//")) != nullptr) {
 		sTmp += 2;
 		memmove(sAddrMb, sTmp, strlen(sTmp) + 1);
 	}
 
 	if ((sPort = strchr(sAddrMb, ':')) == nullptr)
-		return pCallback->set_socket_error("CONNECT error: Pool port number not specified, please use format <hostname>:<port>.");
+		return pCallback->set_socket_error(
+				"CONNECT error: Pool port number not specified, please use format <hostname>:<port>.");
 
 	sPort[0] = '\0';
 	sPort++;
 
-	addrinfo hints = { 0 };
+	addrinfo hints = {0};
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
@@ -78,11 +77,10 @@ bool plain_socket::set_hostname(const char* sAddr)
 		return pCallback->set_socket_error_strerr("CONNECT error: GetAddrInfo: ", err);
 
 	addrinfo *ptr = pAddrRoot;
-	std::vector<addrinfo*> ipv4;
-	std::vector<addrinfo*> ipv6;
+	std::vector < addrinfo * > ipv4;
+	std::vector < addrinfo * > ipv6;
 
-	while (ptr != nullptr)
-	{
+	while (ptr != nullptr) {
 		if (ptr->ai_family == AF_INET)
 			ipv4.push_back(ptr);
 		if (ptr->ai_family == AF_INET6)
@@ -90,19 +88,16 @@ bool plain_socket::set_hostname(const char* sAddr)
 		ptr = ptr->ai_next;
 	}
 
-	if (ipv4.empty() && ipv6.empty())
-	{
+	if (ipv4.empty() && ipv6.empty()) {
 		freeaddrinfo(pAddrRoot);
 		pAddrRoot = nullptr;
 		return pCallback->set_socket_error("CONNECT error: I found some DNS records but no IPv4 or IPv6 addresses.");
-	}
-	else if (!ipv4.empty() && ipv6.empty())
+	} else if (!ipv4.empty() && ipv6.empty())
 		pSockAddr = ipv4[rand() % ipv4.size()];
 	else if (ipv4.empty() && !ipv6.empty())
 		pSockAddr = ipv6[rand() % ipv6.size()];
-	else if (!ipv4.empty() && !ipv6.empty())
-	{
-		if(jconf::inst()->PreferIpv4())
+	else if (!ipv4.empty() && !ipv6.empty()) {
+		if (jconf::inst()->PreferIpv4())
 			pSockAddr = ipv4[rand() % ipv4.size()];
 		else
 			pSockAddr = ipv6[rand() % ipv6.size()];
@@ -110,8 +105,7 @@ bool plain_socket::set_hostname(const char* sAddr)
 
 	hSocket = socket(pSockAddr->ai_family, pSockAddr->ai_socktype, pSockAddr->ai_protocol);
 
-	if (hSocket == INVALID_SOCKET)
-	{
+	if (hSocket == INVALID_SOCKET) {
 		freeaddrinfo(pAddrRoot);
 		pAddrRoot = nullptr;
 		return pCallback->set_socket_error_strerr("CONNECT error: Socket creation failed ");
@@ -120,9 +114,8 @@ bool plain_socket::set_hostname(const char* sAddr)
 	return true;
 }
 
-bool plain_socket::connect()
-{
-	int ret = ::connect(hSocket, pSockAddr->ai_addr, (int)pSockAddr->ai_addrlen);
+bool plain_socket::connect() {
+	int ret = ::connect(hSocket, pSockAddr->ai_addr, (int) pSockAddr->ai_addrlen);
 
 	freeaddrinfo(pAddrRoot);
 	pAddrRoot = nullptr;
@@ -133,123 +126,104 @@ bool plain_socket::connect()
 		return true;
 }
 
-int plain_socket::recv(char* buf, unsigned int len)
-{
+int plain_socket::recv(char *buf, unsigned int len) {
 	int ret = ::recv(hSocket, buf, len, 0);
 
-	if(ret == 0)
+	if (ret == 0)
 		pCallback->set_socket_error("RECEIVE error: socket closed");
-	if(ret == SOCKET_ERROR || ret < 0)
+	if (ret == SOCKET_ERROR || ret < 0)
 		pCallback->set_socket_error_strerr("RECEIVE error: ");
 
 	return ret;
 }
 
-bool plain_socket::send(const char* buf)
-{
+bool plain_socket::send(const char *buf) {
 	int pos = 0, slen = strlen(buf);
-	while (pos != slen)
-	{
+	while (pos != slen) {
 		int ret = ::send(hSocket, buf + pos, slen - pos, 0);
-		if (ret == SOCKET_ERROR)
-		{
+		if (ret == SOCKET_ERROR) {
 			pCallback->set_socket_error_strerr("SEND error: ");
 			return false;
-		}
-		else
+		} else
 			pos += ret;
 	}
 
 	return true;
 }
 
-void plain_socket::close(bool free)
-{
-	if(hSocket != INVALID_SOCKET)
-	{
+void plain_socket::close(bool free) {
+	if (hSocket != INVALID_SOCKET) {
 		sock_close(hSocket);
 		hSocket = INVALID_SOCKET;
 	}
 }
 
 #ifndef CONF_NO_TLS
-tls_socket::tls_socket(jpsock* err_callback) : pCallback(err_callback)
-{
+
+tls_socket::tls_socket(jpsock *err_callback) : pCallback(err_callback) {
 }
 
-void tls_socket::print_error()
-{
-	BIO* err_bio = BIO_new(BIO_s_mem());
+void tls_socket::print_error() {
+	BIO *err_bio = BIO_new(BIO_s_mem());
 	ERR_print_errors(err_bio);
 
 	char *buf = nullptr;
 	size_t len = BIO_get_mem_data(err_bio, &buf);
 
-	if(buf == nullptr)
-	{
-		if(jconf::inst()->TlsSecureAlgos())
-			pCallback->set_socket_error("Unknown TLS error. Secure TLS maybe unspported, try setting tls_secure_algo to false.");
+	if (buf == nullptr) {
+		if (jconf::inst()->TlsSecureAlgos())
+			pCallback->set_socket_error(
+					"Unknown TLS error. Secure TLS maybe unspported, try setting tls_secure_algo to false.");
 		else
 			pCallback->set_socket_error("Unknown TLS error.");
-	}
-	else
+	} else
 		pCallback->set_socket_error(buf, len);
 
 	BIO_free(err_bio);
 }
 
-void tls_socket::init_ctx()
-{
-	const SSL_METHOD* method = SSLv23_method();
+void tls_socket::init_ctx() {
+	const SSL_METHOD *method = SSLv23_method();
 
-	if(method == nullptr)
+	if (method == nullptr)
 		return;
 
 	ctx = SSL_CTX_new(method);
-	if(ctx == nullptr)
+	if (ctx == nullptr)
 		return;
 
-	if(jconf::inst()->TlsSecureAlgos())
-	{
+	if (jconf::inst()->TlsSecureAlgos()) {
 		SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 | SSL_OP_NO_TLSv1 | SSL_OP_NO_COMPRESSION);
 	}
 }
 
-bool tls_socket::set_hostname(const char* sAddr)
-{
-	if(ctx == nullptr)
-	{
+bool tls_socket::set_hostname(const char *sAddr) {
+	if (ctx == nullptr) {
 		init_ctx();
-		if(ctx == nullptr)
-		{
+		if (ctx == nullptr) {
 			print_error();
 			return false;
 		}
 	}
 
-	if((bio = BIO_new_ssl_connect(ctx)) == nullptr)
-	{
+	if ((bio = BIO_new_ssl_connect(ctx)) == nullptr) {
 		print_error();
 		return false;
 	}
 
-	if(BIO_set_conn_hostname(bio, sAddr) != 1)
-	{
+	if (BIO_set_conn_hostname(bio, sAddr) != 1) {
 		print_error();
 		return false;
 	}
 
 	BIO_get_ssl(bio, &ssl);
-	if(ssl == nullptr)
-	{
+	if (ssl == nullptr) {
 		print_error();
 		return false;
 	}
 
-	if(jconf::inst()->TlsSecureAlgos())
-	{
-		if(SSL_set_cipher_list(ssl, "HIGH:!aNULL:!kRSA:!PSK:!SRP:!MD5:!RC4:!SHA1") != 1)
-		{
+	if (jconf::inst()->TlsSecureAlgos()) {
+		if (SSL_set_cipher_list(ssl, "HIGH:!aNULL:!kRSA:!PSK:!SRP:!MD5:!RC4:!SHA1") != 1) {
 			print_error();
 			return false;
 		}
@@ -258,41 +232,35 @@ bool tls_socket::set_hostname(const char* sAddr)
 	return true;
 }
 
-bool tls_socket::connect()
-{
-	if(BIO_do_connect(bio) != 1)
-	{
+bool tls_socket::connect() {
+	if (BIO_do_connect(bio) != 1) {
 		print_error();
 		return false;
 	}
 
-	if(BIO_do_handshake(bio) != 1)
-	{
+	if (BIO_do_handshake(bio) != 1) {
 		print_error();
 		return false;
 	}
 
 	/* Step 1: verify a server certificate was presented during the negotiation */
-	X509* cert = SSL_get_peer_certificate(ssl);
-	if(cert == nullptr)
-	{
+	X509 *cert = SSL_get_peer_certificate(ssl);
+	if (cert == nullptr) {
 		print_error();
 		return false;
 	}
 
-	const EVP_MD* digest;
+	const EVP_MD *digest;
 	unsigned char md[EVP_MAX_MD_SIZE];
 	unsigned int dlen;
 
 	digest = EVP_get_digestbyname("sha256");
-	if(digest == nullptr)
-	{
+	if (digest == nullptr) {
 		print_error();
 		return false;
 	}
 
-	if(X509_digest(cert, digest, md, &dlen) != 1)
-	{
+	if (X509_digest(cert, digest, md, &dlen) != 1) {
 		X509_free(cert);
 		print_error();
 		return false;
@@ -309,22 +277,15 @@ bool tls_socket::connect()
 	BIO_write(b64, md, dlen);
 	BIO_flush(b64);
 
-	const char* conf_md = pCallback->get_tls_fp();
+	const char *conf_md = pCallback->get_tls_fp();
 	char *b64_md = nullptr;
 	size_t b64_len = BIO_get_mem_data(bmem, &b64_md);
 
-	if(strlen(conf_md) == 0)
-	{
-		if(!pCallback->is_dev_pool())
-			printer::inst()->print_msg(L1, "TLS fingerprint [%s] %.*s", pCallback->get_pool_addr(), (int)b64_len, b64_md);
-	}
-	else if(strncmp(b64_md, conf_md, b64_len) != 0)
-	{
-		if(!pCallback->is_dev_pool())
-		{
-			printer::inst()->print_msg(L0, "FINGERPRINT FAILED CHECK [%s] %.*s was given, %s was configured", 
-				pCallback->get_pool_addr(), (int)b64_len, b64_md, conf_md);
-		}
+	if (strlen(conf_md) == 0) {
+		printer::inst()->print_msg(L1, "TLS fingerprint [%s] %.*s", pCallback->get_pool_addr(), (int) b64_len, b64_md);
+	} else if (strncmp(b64_md, conf_md, b64_len) != 0) {
+		printer::inst()->print_msg(L0, "FINGERPRINT FAILED CHECK [%s] %.*s was given, %s was configured",
+								   pCallback->get_pool_addr(), (int) b64_len, b64_md, conf_md);
 
 		pCallback->set_socket_error("FINGERPRINT FAILED CHECK");
 		BIO_free_all(b64);
@@ -338,38 +299,33 @@ bool tls_socket::connect()
 	return true;
 }
 
-int tls_socket::recv(char* buf, unsigned int len)
-{
+int tls_socket::recv(char *buf, unsigned int len) {
 	int ret = BIO_read(bio, buf, len);
 
-	if(ret == 0)
+	if (ret == 0)
 		pCallback->set_socket_error("RECEIVE error: socket closed");
-	if(ret < 0)
+	if (ret < 0)
 		print_error();
 
 	return ret;
 }
 
-bool tls_socket::send(const char* buf)
-{
+bool tls_socket::send(const char *buf) {
 	return BIO_puts(bio, buf) > 0;
 }
 
-void tls_socket::close(bool free)
-{
-	if(bio == nullptr || ssl == nullptr)
+void tls_socket::close(bool free) {
+	if (bio == nullptr || ssl == nullptr)
 		return;
 
-	if(!free)
-	{
+	if (!free) {
 		sock_close(BIO_get_fd(bio, nullptr));
-	}
-	else
-	{
+	} else {
 		BIO_free_all(bio);
 		ssl = nullptr;
 		bio = nullptr;
 	}
 }
+
 #endif
 
