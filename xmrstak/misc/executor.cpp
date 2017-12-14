@@ -504,13 +504,6 @@ void executor::ex_main()
 	{
 		jconf::pool_cfg cfg;
  		jconf::inst()->GetPoolConfig(i, cfg);
-#ifdef CONF_NO_TLS
-		if(cfg.tls)
-		{
-			printer::inst()->print_msg(L1, "ERROR: No miner was compiled without TLS support.");
-			win_exit();
-		}
-#endif
 		if(!cfg.tls) dev_tls = false;
 
 		if(!xmrstak::params::inst().poolURL.empty() && xmrstak::params::inst().poolURL == cfg.sPoolAddr)
