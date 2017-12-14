@@ -321,18 +321,15 @@ endif()
 # Find OpenSSL
 ###############################################################################
 
-option(OpenSSL_ENABLE "Enable or disable the requirement of OpenSSL" ON)
-if(OpenSSL_ENABLE)
-    find_package(OpenSSL)
-    if(OPENSSL_FOUND)
-        include_directories(${OPENSSL_INCLUDE_DIR})
-        set(LIBS ${LIBS} ${OPENSSL_LIBRARIES})
-    else()
-        message(FATAL_ERROR "OpenSSL NOT found: use `-DOpenSSL_ENABLE=OFF` to build without SSL support")
-    endif()
+# Require TLS support
+find_package(OpenSSL)
+if(OPENSSL_FOUND)
+    include_directories(${OPENSSL_INCLUDE_DIR})
+    set(LIBS ${LIBS} ${OPENSSL_LIBRARIES})
 else()
-    add_definitions("-DCONF_NO_TLS")
+    message(FATAL_ERROR "OpenSSL NOT found: OpenSSL is required")
 endif()
+
 
 ################################################################################
 # Find hwloc
