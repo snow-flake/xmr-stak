@@ -81,23 +81,24 @@ int main(int argc, char **argv) {
 				("version", po::value<bool>(&cli_config.version)->implicit_value(false), "show version number")
 				("version-long", po::value<bool>(&cli_config.version_long)->implicit_value(false), "show long version number")
 				("benchmark", po::value<bool>(&cli_config.benchmark)->implicit_value(false), "run the benchmark + tests")
-				("config", po::value<std::string>(&cli_config.config)->implicit_value("config.txt"), "common miner configuration file")
-				("currency", po::value<std::string>(&cli_config.currency)->implicit_value("monero"), "currency to mine: monero or aeon")
-//
-				("no-cpu", po::value<bool>(&cli_config.no_cpu)->implicit_value(false), "disable the CPU miner backend")
-				("cpu-config", po::value<std::string>(&cli_config.cpu_config)->implicit_value("cpu.txt"), "CPU backend miner config file")
-//
-				("no-amd", po::value<bool>(&cli_config.no_amd)->implicit_value(false), "disable the AMD miner backend")
-				("amd-config", po::value<std::string>(&cli_config.amd_config)->implicit_value("amd.txt"), "AMD backend miner config file")
-//
-				("no-nvidia", po::value<bool>(&cli_config.no_nvidia)->implicit_value(false), "disable the NVIDIA miner backend")
-				("nvidia-config", po::value<std::string>(&cli_config.nvidia_config)->implicit_value("nvidia.txt"), "NVIDIA backend miner config file")
-//
-				("url", po::value<std::string>(&cli_config.url)->implicit_value(""), "pool url and port, e.g. pool.usxmrpool.com:3333")
-				("user", po::value<std::string>(&cli_config.user)->implicit_value(""), "pool user name or wallet address")
-				("pass", po::value<std::string>(&cli_config.pass)->implicit_value(""), "pool password, in the most cases x or empty \"\"")
-//
-				("use-nicehash", po::value<bool>(&cli_config.use_nicehash)->implicit_value(false), "the pool should run in nicehash mode");
+//				("config", po::value<std::string>(&cli_config.config)->implicit_value("config.txt"), "common miner configuration file")
+//				("currency", po::value<std::string>(&cli_config.currency)->implicit_value("monero"), "currency to mine: monero or aeon")
+////
+//				("no-cpu", po::value<bool>(&cli_config.no_cpu)->implicit_value(false), "disable the CPU miner backend")
+//				("cpu-config", po::value<std::string>(&cli_config.cpu_config)->implicit_value("cpu.txt"), "CPU backend miner config file")
+////
+//				("no-amd", po::value<bool>(&cli_config.no_amd)->implicit_value(false), "disable the AMD miner backend")
+//				("amd-config", po::value<std::string>(&cli_config.amd_config)->implicit_value("amd.txt"), "AMD backend miner config file")
+////
+//				("no-nvidia", po::value<bool>(&cli_config.no_nvidia)->implicit_value(false), "disable the NVIDIA miner backend")
+//				("nvidia-config", po::value<std::string>(&cli_config.nvidia_config)->implicit_value("nvidia.txt"), "NVIDIA backend miner config file")
+////
+//				("url", po::value<std::string>(&cli_config.url)->implicit_value(""), "pool url and port, e.g. pool.usxmrpool.com:3333")
+//				("user", po::value<std::string>(&cli_config.user)->implicit_value(""), "pool user name or wallet address")
+//				("pass", po::value<std::string>(&cli_config.pass)->implicit_value(""), "pool password, in the most cases x or empty \"\"")
+////
+//				("use-nicehash", po::value<bool>(&cli_config.use_nicehash)->implicit_value(false), "the pool should run in nicehash mode")
+				;
 
 		po::variables_map vm;
 		try {
