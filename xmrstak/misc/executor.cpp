@@ -501,7 +501,7 @@ void executor::ex_main()
 			
 			const char* wallet = params.poolUsername.empty() ? cfg.sWalletAddr : params.poolUsername.c_str();
 			const char* pwd = params.userSetPwd ? params.poolPasswd.c_str() : cfg.sPasswd;
-			bool nicehash = cfg.nicehash || params.nicehashMode;
+			bool nicehash = false;
 			
 			pools.emplace_back(i+1, cfg.sPoolAddr, wallet, pwd, 9.9, false, params.poolUseTls, cfg.tls_fingerprint, nicehash);
 		}
@@ -518,7 +518,7 @@ void executor::ex_main()
 			win_exit();
 		}
 		
-		pools.emplace_back(i+1, params.poolURL.c_str(), params.poolUsername.c_str(), params.poolPasswd.c_str(), 9.9, false, params.poolUseTls, "", params.nicehashMode);
+		pools.emplace_back(i+1, params.poolURL.c_str(), params.poolUsername.c_str(), params.poolPasswd.c_str(), 9.9, false, params.poolUseTls, "", false);
 	}
 
 	if(jconf::inst()->IsCurrencyMonero())
