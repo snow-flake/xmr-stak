@@ -524,7 +524,7 @@ void executor::ex_main()
 		if(dev_tls)
 			pools.emplace_front(0, "donate.xmr-stak.net:6666", "", "", 0.0, true, true, "");
 		else
-			pools.emplace_front(0, "donate.xmr-stak.net:3333", "", "", 0.0, true, false, "", false);
+			pools.emplace_front(0, "donate.xmr-stak.net:3333", "", "", 0.0, true, false, "");
 	}
 	else
 	{
