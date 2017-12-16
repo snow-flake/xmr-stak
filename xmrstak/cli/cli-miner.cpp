@@ -192,8 +192,8 @@ void do_guided_config() {
 
 	// load the template of the backend config into a char variable
 	const char *tpl =
-
-#include "../config.tpl";
+		#include "../config.tpl"
+	;
 
 	configEditor configTpl{};
 	configTpl.set(std::string(tpl));
@@ -531,7 +531,7 @@ int main(int argc, char *argv[]) {
 
 		uint64_t currentTime = time_point_cast<milliseconds>(high_resolution_clock::now()).time_since_epoch().count();
 
-		// Hard guard to make sure we never get called more than twice per second 
+		// Hard guard to make sure we never get called more than twice per second
 		if (currentTime - lastTime < 500)
 			std::this_thread::sleep_for(std::chrono::milliseconds(500 - (currentTime - lastTime)));
 		lastTime = currentTime;
