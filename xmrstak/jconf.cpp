@@ -313,12 +313,6 @@ bool jconf::parse_config(const char* sFilename)
 	wt_max = *std::max_element(pool_weights.begin(), pool_weights.end());
 	wt_min = *std::min_element(pool_weights.begin(), pool_weights.end());
 
-	if(prv->configValues[iCallTimeout]->GetUint64() < 2 || prv->configValues[iNetRetry]->GetUint64() < 2)
-	{
-		printer::inst()->print_msg(L0, "Invalid config file. call_timeout and retry_time need to be larger than 1 second.");
-		return false;
-	}
-
 	if(prv->configValues[bAesOverride]->IsBool())
 		bHaveAes = prv->configValues[bAesOverride]->GetBool();
 
