@@ -616,13 +616,6 @@ void executor::ex_main()
 			print_report(ev.iName);
 			break;
 
-		case EV_HTML_HASHRATE:
-		case EV_HTML_RESULTS:
-		case EV_HTML_CONNSTAT:
-		case EV_HTML_JSON:
-			http_report(ev.iName);
-			break;
-
 		case EV_HASHRATE_LOOP:
 			print_report(EV_USR_HASHRATE);
 			push_timed_event(ex_event(EV_HASHRATE_LOOP), jconf::inst()->GetAutohashTime());
