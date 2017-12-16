@@ -504,7 +504,7 @@ void executor::ex_main()
 			pools.emplace_back(i+1, cfg.sPoolAddr, wallet, pwd, 9.9, false, params.poolUseTls, cfg.tls_fingerprint, false);
 		}
 		else
-			pools.emplace_back(i+1, cfg.sPoolAddr, cfg.sWalletAddr, cfg.sPasswd, cfg.weight, false, cfg.tls, cfg.tls_fingerprint, cfg.nicehash);
+			pools.emplace_back(i+1, cfg.sPoolAddr, cfg.sWalletAddr, cfg.sPasswd, cfg.weight, false, cfg.tls, cfg.tls_fingerprint, false);
 	}
 
 	if(!xmrstak::params::inst().poolURL.empty() && !already_have_cli_pool)
