@@ -15,7 +15,6 @@ addons:
   apt:
     packages: &default_packages
       - cmake
-      - libmicrohttpd-dev
       - libssl-dev
       - libhwloc-dev
 
@@ -103,7 +102,7 @@ install:
 script:
   - if [ $TRAVIS_OS_NAME = osx ]; then
       brew install hwloc;
-      cmake -DMICROHTTPD_ENABLE=OFF -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl ${XMRSTAK_CMAKE_FLAGS} .;
+      cmake -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl ${XMRSTAK_CMAKE_FLAGS} .;
     else
       cmake -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} ${XMRSTAK_CMAKE_FLAGS} .;
     fi;

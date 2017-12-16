@@ -17,7 +17,7 @@
 ### GNU Compiler
 ```
     # Ubuntu / Debian
-    sudo apt install libmicrohttpd-dev libssl-dev cmake build-essential libhwloc-dev
+    sudo apt install libssl-dev cmake build-essential libhwloc-dev
     git clone https://github.com/fireice-uk/xmr-stak.git
     mkdir xmr-stak/build
     cd xmr-stak/build
@@ -25,7 +25,7 @@
     make install
 
     # Arch
-    sudo pacman -S base-devel hwloc openssl cmake libmicrohttpd
+    sudo pacman -S base-devel hwloc openssl cmake
     git clone https://github.com/fireice-uk/xmr-stak.git
     mkdir xmr-stak/build
     cd xmr-stak/build
@@ -33,7 +33,7 @@
     make install
 
     # Fedora
-    sudo dnf install gcc gcc-c++ hwloc-devel libmicrohttpd-devel libstdc++-static make openssl-devel cmake
+    sudo dnf install gcc gcc-c++ hwloc-devel libstdc++-static make openssl-devel cmake
     git clone https://github.com/fireice-uk/xmr-stak.git
     mkdir xmr-stak/build
     cd xmr-stak/build
@@ -42,7 +42,7 @@
 
     # CentOS
     sudo yum install centos-release-scl epel-release
-    sudo yum install cmake3 devtoolset-4-gcc* hwloc-devel libmicrohttpd-devel openssl-devel make
+    sudo yum install cmake3 devtoolset-4-gcc* hwloc-devel openssl-devel make
     sudo scl enable devtoolset-4 bash
     git clone https://github.com/fireice-uk/xmr-stak.git
     mkdir xmr-stak/build
@@ -58,7 +58,7 @@
     curl -L http://www.cmake.org/files/v3.4/cmake-3.4.1.tar.gz | tar -xvzf - -C /tmp/
     cd /tmp/cmake-3.4.1/ && ./configure && make && sudo make install && cd -
     sudo update-alternatives --install /usr/bin/cmake cmake /usr/local/bin/cmake 1 --force
-    sudo apt install libmicrohttpd-dev libssl-dev libhwloc-dev
+    sudo apt install libssl-dev libhwloc-dev
     git clone https://github.com/fireice-uk/xmr-stak.git
     mkdir xmr-stak/build
     cd xmr-stak/build

@@ -47,7 +47,7 @@ using namespace rapidjson;
  */
 enum configEnum {
 	aPoolList, bTlsSecureAlgo, sCurrency, iCallTimeout, iNetRetry, iGiveUpLimit, iVerboseLevel, bPrintMotd, iAutohashTime, 
-	bFlushStdout, bDaemonMode, sOutputFile, iHttpdPort, sHttpLogin, sHttpPass, bPreferIpv4, bAesOverride, sUseSlowMem 
+	bFlushStdout, bDaemonMode, sOutputFile, bPreferIpv4, bAesOverride, sUseSlowMem
 };
 
 struct configVal {
@@ -71,9 +71,6 @@ configVal oConfigValues[] = {
 	{ bFlushStdout, "flush_stdout", kTrueType},
 	{ bDaemonMode, "daemon_mode", kTrueType },
 	{ sOutputFile, "output_file", kStringType },
-	{ iHttpdPort, "httpd_port", kNumberType },
-	{ sHttpLogin, "http_login", kStringType },
-	{ sHttpPass, "http_pass", kStringType },
 	{ bPreferIpv4, "prefer_ipv4", kTrueType },
 	{ bAesOverride, "aes_override", kNullType },
 	{ sUseSlowMem, "use_slow_memory", kStringType }
@@ -233,21 +230,6 @@ bool jconf::PrintMotd()
 uint64_t jconf::GetAutohashTime()
 {
 	return prv->configValues[iAutohashTime]->GetUint64();
-}
-
-uint16_t jconf::GetHttpdPort()
-{
-	return prv->configValues[iHttpdPort]->GetUint();
-}
-
-const char* jconf::GetHttpUsername()
-{
-	return prv->configValues[sHttpLogin]->GetString();
-}
-
-const char* jconf::GetHttpPassword()
-{
-	return prv->configValues[sHttpPass]->GetString();
 }
 
 bool jconf::DaemonMode()
@@ -471,13 +453,6 @@ bool jconf::parse_config(const char* sFilename)
 	{
 		printer::inst()->print_msg(L0,
 			"Invalid config file. verbose_level and h_print_time need to be positive integers.");
-		return false;
-	}
-
-	if(!prv->configValues[iHttpdPort]->IsUint() || prv->configValues[iHttpdPort]->GetUint() > 0xFFFF)
-	{
-		printer::inst()->print_msg(L0,
-			"Invalid config file. httpd_port has to be in the range 0 to 65535.");
 		return false;
 	}
 

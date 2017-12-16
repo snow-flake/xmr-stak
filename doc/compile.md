@@ -43,8 +43,6 @@ After the configuration you need to compile the miner, follow the guide for your
 - `CMAKE_BUILD_TYPE` set the build type
   - valid options: `Release` or `Debug`
   - you should always keep `Release` for your productive miners
-- `MICROHTTPD_ENABLE` allow to disable/enable the dependency *microhttpd*
-  - there is no *http* interface available if option is disabled: `cmake .. -DMICROHTTPD_ENABLE=OFF`
 - `XMR-STAK_CURRENCY` - compile for Monero(XMR) or Aeon(AEON) usage only e.g. `cmake .. -DXMR-STAK_CURRENCY=monero`
 - `XMR-STAK_COMPILE` select the CPU compute architecture (default: native)
   - native means the miner binary can be used only on the system where it is compiled but will archive the highest hash rate
