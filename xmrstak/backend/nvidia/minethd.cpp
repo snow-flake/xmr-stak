@@ -240,15 +240,12 @@ void minethd::work_main()
 
 		assert(sizeof(job_result::sJobID) == sizeof(pool_job::sJobID));
 
-		if(oWork.bNiceHash)
-			iNonce = *(uint32_t*)(oWork.bWorkBlob + 39);
-
 		while(globalStates::inst().iGlobalJobNo.load(std::memory_order_relaxed) == iJobNo)
 		{
 			//Allocate a new nonce every 16 rounds
 			if((round_ctr++ & 0xF) == 0)
 			{
-				globalStates::inst().calc_start_nonce(iNonce, oWork.bNiceHash, h_per_round * 16);
+				globalStates::inst().calc_start_nonce(iNonce, h_per_round * 16);
 			}
 			
 			uint32_t foundNonce[10];

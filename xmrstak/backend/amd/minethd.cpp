@@ -212,15 +212,12 @@ void minethd::work_main()
 		uint64_t target = oWork.iTarget;
 		XMRSetJob(pGpuCtx, oWork.bWorkBlob, oWork.iWorkSize, target);
 
-		if(oWork.bNiceHash)
-			pGpuCtx->Nonce = *(uint32_t*)(oWork.bWorkBlob + 39);
-
 		while(globalStates::inst().iGlobalJobNo.load(std::memory_order_relaxed) == iJobNo)
 		{
 			//Allocate a new nonce every 16 rounds
 			if((round_ctr++ & 0xF) == 0)
 			{
-				globalStates::inst().calc_start_nonce(pGpuCtx->Nonce, oWork.bNiceHash, h_per_round * 16);
+				globalStates::inst().calc_start_nonce(pGpuCtx->Nonce, h_per_round * 16);
 			}
 
 			cl_uint results[0x100];

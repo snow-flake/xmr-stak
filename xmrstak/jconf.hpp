@@ -24,7 +24,6 @@ public:
 		const char* sPoolAddr;
 		const char* sWalletAddr;
 		const char* sPasswd;
-		bool nicehash;
 		bool tls;
 		const char* tls_fingerprint;
 		size_t raw_weight;

@@ -78,7 +78,6 @@ void help()
 	cout<<"  -O, --tls-url URL     TLS pool url and port, e.g. pool.usxmrpool.com:10443"<<endl;
 	cout<<"  -u, --user USERNAME   pool user name or wallet address"<<endl;
 	cout<<"  -p, --pass PASSWD     pool password, in the most cases x or empty \"\""<<endl;
-	cout<<"  --use-nicehash        the pool should run in nicehash mode"<<endl;
 	cout<<" \n"<<endl;
 	cout<< "Version: " << get_version_str_short() << endl;
 	cout<<"Brought to by fireice_uk and psychocrypt under GPLv3."<<endl;
@@ -124,7 +123,6 @@ std::string get_multipool_entry(bool& final)
 	getline(std::cin, passwd);
 
 	bool tls = read_yes_no("- Does this pool port support TLS/SSL? Use no if unknown. (y/N)");
-	bool nicehash = read_yes_no("- Do you want to use nicehash on this pool? (y/n)");
 
 	int64_t pool_weight;
 	std::cout << "- Please enter a weight for this pool: "<<std::endl;
@@ -138,7 +136,7 @@ std::string get_multipool_entry(bool& final)
 	final = !read_yes_no("- Do you want to add another pool? (y/n)");
 
 	return "\t{\"pool_address\" : \"" + pool +"\", \"wallet_address\" : \"" + userName +  "\", \"pool_password\" : \"" +
-		passwd + "\", \"use_nicehash\" : " + bool_to_str(nicehash) + ", \"use_tls\" : " + bool_to_str(tls) +
+		passwd + "\", \"use_nicehash\" : " + "false" + ", \"use_tls\" : " + bool_to_str(tls) +
 		", \"tls_fingerprint\" : \"\", \"pool_weight\" : " + std::to_string(pool_weight) + " },\n";
 }
 
@@ -227,15 +225,6 @@ void do_guided_config()
 	else
 		tls = params::inst().poolUseTls;
 
-	bool nicehash;
-	if(!userSetPool)
-	{
-		prompt_once(prompted);
-		nicehash = read_yes_no("- Do you want to use nicehash on this pool? (y/n)");
-	}
-	else
-		nicehash = params::inst().nicehashMode;
-
 	bool multipool;
 	if(!userSetPool)
 		multipool = read_yes_no("- Do you want to use multiple pools? (y/n)");
@@ -262,7 +251,7 @@ void do_guided_config()
 
 	std::string pool_table;
 	pool_table += "\t{\"pool_address\" : \"" + pool +"\", \"wallet_address\" : \"" + userName +  "\", \"pool_password\" : \"" +
-		passwd + "\", \"use_nicehash\" : " + bool_to_str(nicehash) + ", \"use_tls\" : " + bool_to_str(tls) +
+		passwd + "\", \"use_nicehash\" : " + "false" + ", \"use_tls\" : " + bool_to_str(tls) +
 		", \"tls_fingerprint\" : \"\", \"pool_weight\" : " + std::to_string(pool_weight) + " },\n";
 
 	if(multipool)
@@ -466,10 +455,6 @@ int main(int argc, char *argv[])
 			params::inst().userSetPwd = true;
 			params::inst().poolPasswd = argv[i];
 		}
-		else if(opName.compare("--use-nicehash") == 0)
-		{
-			params::inst().nicehashMode = true;
-		}
 		else if(opName.compare("-c") == 0 || opName.compare("--config") == 0)
 		{
 			++i;
@@ -577,7 +562,7 @@ void do_benchmark()
 	printer::inst()->print_msg(L0, "Running a 60 second benchmark...");
 
 	uint8_t work[76] = {0};
-	xmrstak::miner_work oWork = xmrstak::miner_work("", work, sizeof(work), 0, false, 0);
+	xmrstak::miner_work oWork = xmrstak::miner_work("", work, sizeof(work), 0, 0);
 	pvThreads = xmrstak::BackendConnector::thread_starter(oWork);
 
 	uint64_t iStartStamp = time_point_cast<milliseconds>(high_resolution_clock::now()).time_since_epoch().count();
