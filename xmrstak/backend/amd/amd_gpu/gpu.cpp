@@ -25,21 +25,12 @@
 #include <regex>
 #include <cassert>
 
-#ifdef _WIN32
-#include <windows.h>
-
-static inline void port_sleep(size_t sec)
-{
-	Sleep(sec * 1000);
-}
-#else
 #include <unistd.h>
 
 static inline void port_sleep(size_t sec)
 {
 	sleep(sec);
 }
-#endif // _WIN32
 
 #if 0
 static inline long long unsigned int int_port(size_t i)

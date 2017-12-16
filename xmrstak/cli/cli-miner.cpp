@@ -47,10 +47,6 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
-#ifdef _WIN32
-#	define strcasecmp _stricmp
-#endif // _WIN32
-
 void do_benchmark();
 
 void help()
@@ -65,9 +61,6 @@ void help()
 	cout<<"  -V, --version-long    show long version number"<<endl;
 	cout<<"  --benchmark           run the benchmark + tests"<<endl;
 	cout<<"  -c, --config FILE     common miner configuration file"<<endl;
-#ifdef _WIN32
-	cout<<"  --noUAC               disable the UAC dialog"<<endl;
-#endif
 #if (!defined(CONF_NO_AEON)) && (!defined(CONF_NO_MONERO))
 	cout<<"  --currency NAME       currency to mine: monero or aeon"<<endl;
 #endif
@@ -92,12 +85,6 @@ void help()
 	cout<<"  -p, --pass PASSWD     pool password, in the most cases x or empty \"\""<<endl;
 	cout<<"  --use-nicehash        the pool should run in nicehash mode"<<endl;
 	cout<<" \n"<<endl;
-#ifdef _WIN32
-	cout<<"Environment variables:\n"<<endl;
-	cout<<"  XMRSTAK_NOWAIT        disable the dialog `Press any key to exit."<<std::endl;
-	cout<<"                	       for non UAC execution"<<endl;
-	cout<<" \n"<<endl;
-#endif
 	cout<< "Version: " << get_version_str_short() << endl;
 	cout<<"Brought to by fireice_uk and psychocrypt under GPLv3."<<endl;
 }
@@ -299,40 +286,6 @@ void do_guided_config()
 	std::cout<<"Configuration stored in file '"<<params::inst().configFile<<"'"<<std::endl;
 }
 
-#ifdef _WIN32
-/** start the miner as administrator
- *
- * This function based on the stackoverflow post
- *   - source: https://stackoverflow.com/a/4893508
- *   - author: Cody Gray
- *   - date: Feb 4 '11
- */
-void UACDialog(const std::string& binaryName, std::string& args)
-{
-		args += " --noUAC";
-		SHELLEXECUTEINFO shExInfo = {0};
-		shExInfo.cbSize = sizeof(shExInfo);
-		shExInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
-		shExInfo.hwnd = 0;
-		shExInfo.lpVerb = "runas";
-		shExInfo.lpFile = binaryName.c_str();
-		// disable UAC dialog (else the miner will go into a infinite loop)
-		shExInfo.lpParameters = args.c_str();
-		shExInfo.lpDirectory = 0;
-		shExInfo.nShow = SW_SHOW;
-		shExInfo.hInstApp = 0;
-
-		if(ShellExecuteEx(&shExInfo))
-		{
-			printer::inst()->print_msg(L0,
-				"This window has been opened because xmr-stak needed to run as administrator.  It can be safely closed now.");
-			WaitForSingleObject(shExInfo.hProcess, INFINITE);
-			CloseHandle(shExInfo.hProcess);
-			// do not start the miner twice
-			std::exit(0);
-		}
-}
-#endif
 
 int main(int argc, char *argv[])
 {
@@ -544,20 +497,6 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 	}
-
-#ifdef _WIN32
-	if(uacDialog)
-	{
-		std::string minerArgs;
-		for(int i = 1; i < argc; i++)
-		{
-			minerArgs += " ";
-			minerArgs += argv[i];
-		}
-
-		UACDialog(argv[0], minerArgs);
-	}
-#endif
 
 	// check if we need a guided start
 	if(!configEditor::file_exist(params::inst().configFile))
