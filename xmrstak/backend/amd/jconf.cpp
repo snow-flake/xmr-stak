@@ -26,12 +26,7 @@
 #include "xmrstak/misc/jext.hpp"
 #include "xmrstak/misc/console.hpp"
 
-#ifdef _WIN32
-#define strcasecmp _stricmp
-#include <intrin.h>
-#else
 #include <cpuid.h>
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>

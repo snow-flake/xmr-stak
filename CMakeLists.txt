@@ -277,10 +277,9 @@ endif()
 # Find PThreads
 ################################################################################
 
-if(NOT WIN32)
-    find_package(Threads REQUIRED)
-    set(LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT})
-endif()
+find_package(Threads REQUIRED)
+set(LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT})
+
 ################################################################################
 # Find microhttpd
 ################################################################################
@@ -368,13 +367,6 @@ else()
     add_definitions("-DCONF_NO_HWLOC")
 endif()
 
-################################################################################
-# Windows Sockets
-################################################################################
-
-if(WIN32)
-    set(LIBS ${LIBS} wsock32 ws2_32)
-endif()
 
 ################################################################################
 # Versioning
@@ -528,22 +520,10 @@ if( NOT CMAKE_INSTALL_PREFIX STREQUAL PROJECT_BINARY_DIR )
     install(TARGETS xmr-stak
             RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
     if(CUDA_FOUND)
-        if(WIN32)
-            install(TARGETS xmrstak_cuda_backend
-                RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
-        else()
-            install(TARGETS xmrstak_cuda_backend
-                LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
-        endif()
+        install(TARGETS xmrstak_cuda_backend LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
     endif()
     if(OpenCL_FOUND)
-        if(WIN32)
-            install(TARGETS xmrstak_opencl_backend
-                RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
-        else()
-            install(TARGETS xmrstak_opencl_backend
-                LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
-        endif()
+        install(TARGETS xmrstak_opencl_backend LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
     endif()
 else()
     # this rule is used if the install prefix is the build directory
