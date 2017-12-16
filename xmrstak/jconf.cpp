@@ -121,14 +121,13 @@ bool jconf::GetPoolConfig(size_t id, pool_cfg& cfg)
 		return false;
 
 	typedef const Value* cval;
-	cval jaddr, jlogin, jpasswd, jnicehash, jtls, jtlsfp, jwt;
+	cval jaddr, jlogin, jpasswd, jtls, jtlsfp, jwt;
 	const Value& oThdConf = prv->configValues[aPoolList]->GetArray()[id];
 
 	/* We already checked presence and types */
 	jaddr = GetObjectMember(oThdConf, "pool_address");
 	jlogin = GetObjectMember(oThdConf, "wallet_address");
 	jpasswd = GetObjectMember(oThdConf, "pool_password");
-	jnicehash = GetObjectMember(oThdConf, "use_nicehash");
 	jtls = GetObjectMember(oThdConf, "use_tls");
 	jtlsfp = GetObjectMember(oThdConf, "tls_fingerprint");
 	jwt = GetObjectMember(oThdConf, "pool_weight");

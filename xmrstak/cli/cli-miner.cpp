@@ -225,7 +225,6 @@ void do_guided_config()
 	else
 		tls = params::inst().poolUseTls;
 
-	bool nicehash = false;
 	bool multipool;
 	if(!userSetPool)
 		multipool = read_yes_no("- Do you want to use multiple pools? (y/n)");
@@ -252,7 +251,7 @@ void do_guided_config()
 
 	std::string pool_table;
 	pool_table += "\t{\"pool_address\" : \"" + pool +"\", \"wallet_address\" : \"" + userName +  "\", \"pool_password\" : \"" +
-		passwd + "\", \"use_nicehash\" : " + bool_to_str(nicehash) + ", \"use_tls\" : " + bool_to_str(tls) +
+		passwd + "\", \"use_nicehash\" : " + "false" + ", \"use_tls\" : " + bool_to_str(tls) +
 		", \"tls_fingerprint\" : \"\", \"pool_weight\" : " + std::to_string(pool_weight) + " },\n";
 
 	if(multipool)
@@ -455,10 +454,6 @@ int main(int argc, char *argv[])
 			}
 			params::inst().userSetPwd = true;
 			params::inst().poolPasswd = argv[i];
-		}
-		else if(opName.compare("--use-nicehash") == 0)
-		{
-			params::inst().nicehashMode = true;
 		}
 		else if(opName.compare("-c") == 0 || opName.compare("--config") == 0)
 		{

@@ -356,7 +356,7 @@ void executor::on_pool_have_job(size_t pool_id, pool_job& oPoolJob)
 
 	jpsock* pool = pick_pool_by_id(pool_id);
 
-	xmrstak::miner_work oWork(oPoolJob.sJobID, oPoolJob.bWorkBlob, oPoolJob.iWorkLen, oPoolJob.iTarget, pool->is_nicehash(), pool_id);
+	xmrstak::miner_work oWork(oPoolJob.sJobID, oPoolJob.bWorkBlob, oPoolJob.iWorkLen, oPoolJob.iTarget, pool_id);
 
 	xmrstak::pool_data dat;
 	dat.iSavedNonce = oPoolJob.iSavedNonce;
@@ -501,9 +501,7 @@ void executor::ex_main()
 			
 			const char* wallet = params.poolUsername.empty() ? cfg.sWalletAddr : params.poolUsername.c_str();
 			const char* pwd = params.userSetPwd ? params.poolPasswd.c_str() : cfg.sPasswd;
-			bool nicehash = false;
-			
-			pools.emplace_back(i+1, cfg.sPoolAddr, wallet, pwd, 9.9, false, params.poolUseTls, cfg.tls_fingerprint, nicehash);
+			pools.emplace_back(i+1, cfg.sPoolAddr, wallet, pwd, 9.9, false, params.poolUseTls, cfg.tls_fingerprint, false);
 		}
 		else
 			pools.emplace_back(i+1, cfg.sPoolAddr, cfg.sWalletAddr, cfg.sPasswd, cfg.weight, false, cfg.tls, cfg.tls_fingerprint, cfg.nicehash);
