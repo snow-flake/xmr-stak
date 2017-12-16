@@ -58,6 +58,7 @@ public:
 	 * allowed values: 'monero' or 'aeon'
 	 */
 	inline const std::string GetCurrency() { return "monero"; }
+	inline bool IsCurrencyMonero() { return true; }
 
 	/*
 	 * Output control.
