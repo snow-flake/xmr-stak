@@ -35,22 +35,6 @@ XMR-Stak is a universal Stratum pool miner. This miner supports CPUs, AMD and NV
 You can find the latest releases and precompiled binaries on GitHub under [Releases](https://github.com/fireice-uk/xmr-stak/releases).
 If you are running on Linux (especially Linux VMs), checkout [Linux Portable Binary](doc/Linux_deployment.md).
 
-## Default Developer Donation
-
-By default the miner will donate 2% of the hashpower (2 minute in 100 minutes) to my pool. If you want to change that, edit [donate-level.hpp](xmrstak/donate-level.hpp) before you build the binaries.
-
-If you want to donate directly to support further development, here is my wallet
-
-fireice-uk:
-```
-4581HhZkQHgZrZjKeCfCJxZff9E3xCgHGF25zABZz7oR71TnbbgiS7sK9jveE6Dx6uMs2LwszDuvQJgRZQotdpHt1fTdDhk
-```
-
-psychocrypt:
-```
-43NoJVEXo21hGZ6tDG6Z3g4qimiGdJPE6GRxAmiWwm26gwr62Lqo7zRiCJFSBmbkwTGNuuES9ES5TgaVHceuYc4Y75txCTU
-```
-
 ## Release Checksums
 
 Please use the [Developer PGP Key's](doc/pgp_keys.md) to verify the integrity of the precompiled binaries.

@@ -33,7 +33,6 @@
 
 #include "xmrstak/jconf.hpp"
 #include "xmrstak/misc/console.hpp"
-#include "xmrstak/donate-level.hpp"
 #include "xmrstak/version.hpp"
 
 #include <thread>
@@ -149,7 +148,7 @@ void executor::eval_pool_choice()
 	std::vector<jpsock*> eval_pools;
 	eval_pools.reserve(pools.size());
 
-	bool dev_time = is_dev_time();
+	bool dev_time = false;
 	if(!get_live_pools(eval_pools, dev_time))
 		return;
 
