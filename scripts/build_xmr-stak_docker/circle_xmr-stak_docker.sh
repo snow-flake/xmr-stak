@@ -11,11 +11,11 @@ fi
 
 set -x ;
 apt update -qq ;
-apt install -y -qq cmake g++ libmicrohttpd-dev libssl-dev libhwloc-dev wget;
+apt install -y -qq cmake g++ libssl-dev libhwloc-dev wget;
 
 wget -c https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda_9.0.176_384.81_linux-run;
 chmod a+x cuda_*_linux-run;
 ./cuda_*_linux-run --silent --toolkit ;
 
-cmake -DCUDA_ENABLE=OFF -DOpenCL_ENABLE=OFF -DMICROHTTPD_ENABLE=OFF -DCMAKE_LINK_STATIC=ON .;
+cmake -DCUDA_ENABLE=OFF -DOpenCL_ENABLE=OFF -DCMAKE_LINK_STATIC=ON .;
 make;

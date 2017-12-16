@@ -9,7 +9,7 @@ Assuming you already have [Homebrew](https://brew.sh) installed, the installatio
 ```shell
 brew tap caskroom/drivers
 brew cask install nvidia-cuda
-brew install hwloc libmicrohttpd gcc openssl cmake
+brew install hwloc gcc openssl cmake
 cmake . -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl -DOpenCL_ENABLE=OFF
 make install
 ```
@@ -23,7 +23,7 @@ make install
 ### For CPU-only mining
 
 ```shell
-brew install hwloc libmicrohttpd gcc openssl cmake
+brew install hwloc gcc openssl cmake
 cmake . -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl -DCUDA_ENABLE=OFF -DOpenCL_ENABLE=OFF
 make install
 ```

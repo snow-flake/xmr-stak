@@ -38,8 +38,6 @@ public:
 
 	void ex_start(bool daemon) { daemon ? ex_main() : std::thread(&executor::ex_main, this).detach(); }
 
-	void get_http_report(ex_event_name ev_id, std::string& data);
-
 	inline void push_event(ex_event&& ev) { oEventQ.push(std::move(ev)); }
 	void push_timed_event(ex_event&& ev, size_t sec);
 
@@ -102,12 +100,6 @@ private:
 	void result_report(std::string& out);
 	void connection_report(std::string& out);
 
-	void http_hashrate_report(std::string& out);
-	void http_result_report(std::string& out);
-	void http_connection_report(std::string& out);
-	void http_json_report(std::string& out);
-
-	void http_report(ex_event_name ev);
 	void print_report(ex_event_name ev);
 
 	std::string* pHttpString = nullptr;
