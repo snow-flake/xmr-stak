@@ -77,10 +77,12 @@ int main(int argc, char **argv) {
 		namespace po = boost::program_options;
 		po::options_description desc("Options");
 		desc.add_options()
-				("help", po::value<bool>(&cli_config.help)->implicit_value(false), "Print help messages")
-				("version", po::value<bool>(&cli_config.version)->implicit_value(false), "show version number")
-				("version-long", po::value<bool>(&cli_config.version_long)->implicit_value(false), "show long version number")
-				("benchmark", po::value<bool>(&cli_config.benchmark)->implicit_value(false), "run the benchmark + tests")
+				("help",
+//				 po::value<bool>(&cli_config.help)->implicit_value(false),
+				 "Print help messages")
+//				("version", po::value<bool>(&cli_config.version)->implicit_value(false), "show version number")
+//				("version-long", po::value<bool>(&cli_config.version_long)->implicit_value(false), "show long version number")
+//				("benchmark", po::value<bool>(&cli_config.benchmark)->implicit_value(false), "run the benchmark + tests")
 //				("config", po::value<std::string>(&cli_config.config)->implicit_value("config.txt"), "common miner configuration file")
 //				("currency", po::value<std::string>(&cli_config.currency)->implicit_value("monero"), "currency to mine: monero or aeon")
 ////
