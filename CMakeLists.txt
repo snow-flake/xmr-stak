@@ -388,12 +388,8 @@ execute_process(
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-if(NOT GIT_COMMIT_HASH STREQUAL "")
-	add_definitions("-DGIT_COMMIT_HASH=${GIT_COMMIT_HASH}")
-endif()
-if(NOT GIT_BRANCH STREQUAL "")
-	add_definitions("-DGIT_BRANCH=${GIT_BRANCH}")
-endif()
+add_definitions("-DGIT_COMMIT_HASH=31a078416042d5492540f4bdb1466a84b690430e")
+add_definitions("-DGIT_BRANCH=master")
 
 # generate backend string
 string(REPLACE ";" "-" STR_BACKEND_TYPES "${BACKEND_TYPES}")
