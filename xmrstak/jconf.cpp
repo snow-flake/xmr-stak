@@ -46,8 +46,8 @@ using namespace rapidjson;
  * This enum needs to match index in oConfigValues, otherwise we will get a runtime error
  */
 enum configEnum {
-	aPoolList, bTlsSecureAlgo, sCurrency, iCallTimeout, iNetRetry, iGiveUpLimit, iVerboseLevel, bPrintMotd, iAutohashTime, 
-	bFlushStdout, bDaemonMode, sOutputFile, bPreferIpv4, bAesOverride, sUseSlowMem
+	aPoolList,
+	bAesOverride
 };
 
 struct configVal {
@@ -60,20 +60,7 @@ struct configVal {
 // kNullType means any type
 configVal oConfigValues[] = {
 	{ aPoolList, "pool_list", kArrayType },
-	{ bTlsSecureAlgo, "tls_secure_algo", kTrueType },
-	{ sCurrency, "currency", kStringType },
-	{ iCallTimeout, "call_timeout", kNumberType },
-	{ iNetRetry, "retry_time", kNumberType },
-	{ iGiveUpLimit, "giveup_limit", kNumberType },
-	{ iVerboseLevel, "verbose_level", kNumberType },
-	{ bPrintMotd, "print_motd", kTrueType },
-	{ iAutohashTime, "h_print_time", kNumberType },
-	{ bFlushStdout, "flush_stdout", kTrueType},
-	{ bDaemonMode, "daemon_mode", kTrueType },
-	{ sOutputFile, "output_file", kStringType },
-	{ bPreferIpv4, "prefer_ipv4", kTrueType },
 	{ bAesOverride, "aes_override", kNullType },
-	{ sUseSlowMem, "use_slow_memory", kStringType }
 };
 
 constexpr size_t iConfigCnt = (sizeof(oConfigValues)/sizeof(oConfigValues[0]));
@@ -151,95 +138,6 @@ bool jconf::GetPoolConfig(size_t id, pool_cfg& cfg)
 	return true;
 }
 
-bool jconf::TlsSecureAlgos()
-{
-	return prv->configValues[bTlsSecureAlgo]->GetBool();
-}
-
-const std::string jconf::GetCurrency()
-{
-	auto& currency = xmrstak::params::inst().currency;
-	if(currency.empty())
-		currency = prv->configValues[sCurrency]->GetString();
-	if(
-#ifndef CONF_NO_MONERO
-			// if monero is disabled at compile time, enable error message if selected currency is `monero`
-			!xmrstak::strcmp_i(currency, "monero")
-#else
-			true
-#endif
-			&&
-#ifndef CONF_NO_AEON
-			// if aeon is disabled at compile time, enable error message if selected currency is `aeon`
-			!xmrstak::strcmp_i(currency, "aeon")
-#else
-			true
-#endif
-	)
-	{
-		printer::inst()->print_msg(L0, "ERROR: Wrong currency selected - '%s'.", currency.c_str());
-		win_exit();
-	}
-	return currency;
-}
-
-bool jconf::IsCurrencyMonero()
-{
-	if(xmrstak::strcmp_i(GetCurrency(), "monero"))
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-bool jconf::PreferIpv4()
-{
-	return prv->configValues[bPreferIpv4]->GetBool();
-}
-
-uint64_t jconf::GetCallTimeout()
-{
-	return prv->configValues[iCallTimeout]->GetUint64();
-}
-
-uint64_t jconf::GetNetRetry()
-{
-	return prv->configValues[iNetRetry]->GetUint64();
-}
-
-uint64_t jconf::GetGiveUpLimit()
-{
-	return prv->configValues[iGiveUpLimit]->GetUint64();
-}
-
-uint64_t jconf::GetVerboseLevel()
-{
-	return prv->configValues[iVerboseLevel]->GetUint64();
-}
-
-bool jconf::PrintMotd()
-{
-	return prv->configValues[bPrintMotd]->GetBool();
-}
-
-uint64_t jconf::GetAutohashTime()
-{
-	return prv->configValues[iAutohashTime]->GetUint64();
-}
-
-bool jconf::DaemonMode()
-{
-	return prv->configValues[bDaemonMode]->GetBool();
-}
-
-const char* jconf::GetOutputFile()
-{
-	return prv->configValues[sOutputFile]->GetString();
-}
-
 void jconf::cpuid(uint32_t eax, int32_t ecx, int32_t val[4])
 {
 	memset(val, 0, sizeof(int32_t)*4);
@@ -259,22 +157,6 @@ bool jconf::check_cpu_features()
 	bHaveSse2 = (cpu_info[3] & SSE2_BIT) != 0;
 
 	return bHaveSse2;
-}
-
-jconf::slow_mem_cfg jconf::GetSlowMemSetting()
-{
-	const char* opt = prv->configValues[sUseSlowMem]->GetString();
-
-	if(strcasecmp(opt, "always") == 0)
-		return always_use;
-	else if(strcasecmp(opt, "no_mlck") == 0)
-		return no_mlck;
-	else if(strcasecmp(opt, "warn") == 0)
-		return print_warning;
-	else if(strcasecmp(opt, "never") == 0)
-		return never_use;
-	else
-		return unknown_value;
 }
 
 bool jconf::parse_config(const char* sFilename)
@@ -431,26 +313,9 @@ bool jconf::parse_config(const char* sFilename)
 	wt_max = *std::max_element(pool_weights.begin(), pool_weights.end());
 	wt_min = *std::min_element(pool_weights.begin(), pool_weights.end());
 
-	if(!prv->configValues[iCallTimeout]->IsUint64() ||
-		!prv->configValues[iNetRetry]->IsUint64() ||
-		!prv->configValues[iGiveUpLimit]->IsUint64())
-	{
-		printer::inst()->print_msg(L0,
-			"Invalid config file. call_timeout, retry_time and giveup_limit need to be positive integers.");
-		return false;
-	}
-
 	if(prv->configValues[iCallTimeout]->GetUint64() < 2 || prv->configValues[iNetRetry]->GetUint64() < 2)
 	{
-		printer::inst()->print_msg(L0,
-			"Invalid config file. call_timeout and retry_time need to be larger than 1 second.");
-		return false;
-	}
-
-	if(!prv->configValues[iVerboseLevel]->IsUint64() || !prv->configValues[iAutohashTime]->IsUint64())
-	{
-		printer::inst()->print_msg(L0,
-			"Invalid config file. verbose_level and h_print_time need to be positive integers.");
+		printer::inst()->print_msg(L0, "Invalid config file. call_timeout and retry_time need to be larger than 1 second.");
 		return false;
 	}
 
@@ -460,24 +325,8 @@ bool jconf::parse_config(const char* sFilename)
 	if(!bHaveAes)
 		printer::inst()->print_msg(L0, "Your CPU doesn't support hardware AES. Don't expect high hashrates.");
 
-	printer::inst()->set_verbose_level(prv->configValues[iVerboseLevel]->GetUint64());
-
-	if(GetSlowMemSetting() == unknown_value)
-	{
-		printer::inst()->print_msg(L0,
-			"Invalid config file. use_slow_memory must be \"always\", \"no_mlck\", \"warn\" or \"never\"");
-		return false;
-	}
-
-	if (prv->configValues[bFlushStdout]->IsBool())
-	{
-		bool bflush = prv->configValues[bFlushStdout]->GetBool();
-		printer::inst()->set_flush_stdout(bflush);
-		if (bflush)
-		{
-			printer::inst()->print_msg(L0, "Flush stdout forced.");
-		}
-	}
+	printer::inst()->set_verbose_level(3);
+	printer::inst()->set_flush_stdout(false);
 
 	return true;
 }

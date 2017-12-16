@@ -150,11 +150,5 @@ POOLCONF],
  */
 "output_file" : "",
 
-/*
- * prefer_ipv4 - IPv6 preference. If the host is available on both IPv4 and IPv6 net, which one should be choose?
- *               This setting will only be needed in 2020's. No need to worry about it now.
- */
-"prefer_ipv4" : true,
-
 )==="
 		
