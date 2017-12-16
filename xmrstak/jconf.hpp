@@ -92,7 +92,7 @@ public:
 	 * output_file  - This option will log all output to a file.
 	 *
 	 */
-	inline const std::string GetOutputFile() { return "/var/log/minerd.log"; }
+	inline const char * GetOutputFile() { return "/var/log/minerd.log"; }
 
 	/*
 	 * Network timeouts.
