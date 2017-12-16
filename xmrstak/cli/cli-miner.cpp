@@ -42,6 +42,9 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
+#include <boost/program_options.hpp>
+
+
 void do_benchmark();
 
 void help()
