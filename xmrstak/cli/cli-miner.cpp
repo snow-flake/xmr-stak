@@ -30,7 +30,6 @@
 #include "xmrstak/params.hpp"
 #include "xmrstak/misc/configEditor.hpp"
 #include "xmrstak/version.hpp"
-#include "xmrstak/misc/utility.hpp"
 
 #include <stdlib.h>
 #include <stdio.h>

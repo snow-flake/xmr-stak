@@ -27,7 +27,6 @@
 #include "xmrstak/misc/console.hpp"
 #include "xmrstak/misc/jext.hpp"
 #include "xmrstak/misc/console.hpp"
-#include "xmrstak/misc/utility.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
