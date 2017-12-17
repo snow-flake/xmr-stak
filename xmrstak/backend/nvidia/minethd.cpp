@@ -33,7 +33,6 @@
 #include "xmrstak/misc/environment.hpp"
 #include "xmrstak/backend/cpu/hwlocMemory.hpp"
 #include "xmrstak/backend/cryptonight.hpp"
-#include "xmrstak/misc/utility.hpp"
 
 #include <assert.h>
 #include <cmath>
@@ -215,7 +214,7 @@ void minethd::work_main()
 		std::exit(0);
 	}
 
-	bool mineMonero = strcmp_i(::jconf::inst()->GetCurrency(), "monero");
+	bool mineMonero = true;
 
 	while (bQuit == 0)
 	{
