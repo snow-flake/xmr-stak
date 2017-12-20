@@ -13,11 +13,6 @@
 * [CPU Backend](#cpu-backend)
   * [Choose Value for `low_power_mode`](#choose-value-for-low_power_mode)
 
-## Windows
-"Run As Administrator" prompt (UAC) confirmation is needed to use large pages on Windows 7.
-On Windows 10 it is only needed once to set up the account to use them.
-Disable the dialog with the command line option `--noUAC`
-
 ## NVIDIA Backend
 
 By default the NVIDIA backend can be tuned in the config file `nvidia.txt`
