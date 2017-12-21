@@ -27,5 +27,9 @@ inline std::string get_version_str_short()
 }
 
 inline std::string get_pool_address() {
-	return std::string("")
+	return std::string(POOL_ADDRESS ":" POOL_PORT);
+}
+
+inline bool get_bool_is_tls() {
+	return POOL_TLS;
 }
