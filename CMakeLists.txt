@@ -2,11 +2,30 @@ project(xmr-stak)
 
 cmake_minimum_required(VERSION 3.1.0)
 
+
+################################################################################
+# CMake Pool configuration options
+################################################################################
+
+if(NOT POOL_ADDRESS STREQUAL "")
+    add_definitions("-DPOOL_ADDRESS=${POOL_ADDRESS}")
+endif()
+if(NOT POOL_PORT STREQUAL "")
+    add_definitions("-DPOOL_PORT=${POOL_PORT}")
+endif()
+if(NOT POOL_TLS STREQUAL "")
+    add_definitions("-DPOOL_TLS=${POOL_TLS}")
+endif()
+
+
+
+
 # enforce C++11
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 11)
 include_directories("./boost")
+
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}" CACHE PATH "install prefix" FORCE)
