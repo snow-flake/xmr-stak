@@ -476,6 +476,11 @@ int main(int argc, char *argv[])
 	if(!configEditor::file_exist(params::inst().configFile))
 		do_guided_config();
 
+	const int cpu_count = 2;
+	const int low_power_mode = 1;
+	const bool no_prefetch = true;
+	xmrstak::cpu::jconf::inst()->parse_config(cpu_count, low_power_mode, no_prefetch);
+
 	if(!jconf::inst()->parse_config(params::inst().configFile.c_str()))
 	{
 		win_exit();

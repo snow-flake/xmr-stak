@@ -349,6 +349,7 @@ int tls_socket::recv(char* buf, unsigned int len)
 
 bool tls_socket::send(const char* buf)
 {
+	std::cout << "Sending message: " << buf << std::end;
 	return BIO_puts(bio, buf) > 0;
 }
 
