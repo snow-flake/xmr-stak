@@ -300,7 +300,6 @@ int main(int argc, char *argv[])
 		params::inst().executablePrefix += seperator;
 	}
 
-	bool uacDialog = true;
 	bool pool_url_set = false;
 	for(size_t i = 1; i < argc-1; i++)
 	{
@@ -464,10 +463,6 @@ int main(int argc, char *argv[])
 				return 1;
 			}
 			params::inst().configFile = argv[i];
-		}
-		else if(opName.compare("--noUAC") == 0)
-		{
-			uacDialog = false;
 		}
 		else
 		{
