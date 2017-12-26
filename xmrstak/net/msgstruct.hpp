@@ -3,6 +3,7 @@
 #include <string>
 #include <string.h>
 #include <assert.h>
+#include <sstream>
 
 // Structures that we use to pass info between threads constructors are here just to make
 // the stack allocation take up less space, heap is a shared resouce that needs locks too of course
@@ -23,6 +24,24 @@ struct pool_job
 		memcpy(this->sJobID, sJobID, sizeof(pool_job::sJobID));
 		memcpy(this->bWorkBlob, bWorkBlob, iWorkLen);
 	}
+
+	std::string to_string() {
+		std::ostringstream oss;
+		std::string buffer;
+		buffer.assign(sJobID, sizeof(pool_job::sJobID));
+		oss << "pool_job:{ ";
+		oss << "'iTarget': '" << iTarget << "' ";
+		oss << ", ";
+		oss << "'iWorkLen': '" << iWorkLen << "' ";
+		oss << ", ";
+		oss << "'iSavedNonce': '" << iSavedNonce << "' ";
+		oss << ", ";
+		oss << "'sJobID': '" << buffer << "' ";
+		oss << ", ";
+		oss << "'bWorkBlob': '" << bWorkBlob << "' ";
+		oss << "}";
+		return oss.str();
+	}
 };
 
 struct job_result
@@ -37,6 +56,24 @@ struct job_result
 	{
 		memcpy(this->sJobID, sJobID, sizeof(job_result::sJobID));
 		memcpy(this->bResult, bResult, sizeof(job_result::bResult));
+	}
+
+	std::string to_string() {
+		std::ostringstream oss;
+		std::string buffer;
+		buffer.assign(sJobID, sizeof(pool_job::sJobID));
+		oss << "job_result:{ ";
+		oss << "'iThreadId': '" << iThreadId << "' ";
+		oss << ", ";
+		oss << "'iNonce': '" << iNonce << "' ";
+		oss << ", ";
+		oss << "'iSavedNonce': '" << iSavedNonce << "' ";
+		oss << ", ";
+		oss << "'sJobID': '" << buffer << "' ";
+		oss << ", ";
+		oss << "'bResult': '" << bResult << "' ";
+		oss << "}";
+		return oss.str();
 	}
 };
 

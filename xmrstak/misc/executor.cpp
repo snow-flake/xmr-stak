@@ -351,8 +351,11 @@ void executor::on_sock_error(size_t pool_id, std::string&& sError, bool silent)
 
 void executor::on_pool_have_job(size_t pool_id, pool_job& oPoolJob)
 {
+	printer::inst()->print_msg(L1, oPoolJob.to_string());
 	if(pool_id != current_pool_id)
 		return;
+
+	printer::inst()->print_msg(L3, oPoolJob.);
 
 	jpsock* pool = pick_pool_by_id(pool_id);
 
@@ -399,6 +402,7 @@ void executor::on_pool_have_job(size_t pool_id, pool_job& oPoolJob)
 
 void executor::on_miner_result(size_t pool_id, job_result& oResult)
 {
+	printer::inst()->print_msg(L1, oResult.to_string());
 	jpsock* pool = pick_pool_by_id(pool_id);
 	bool is_monero = jconf::inst()->IsCurrencyMonero();
 
