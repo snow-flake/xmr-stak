@@ -355,8 +355,6 @@ void executor::on_pool_have_job(size_t pool_id, pool_job& oPoolJob)
 	if(pool_id != current_pool_id)
 		return;
 
-	printer::inst()->print_msg(L3, oPoolJob.);
-
 	jpsock* pool = pick_pool_by_id(pool_id);
 
 	xmrstak::miner_work oWork(oPoolJob.sJobID, oPoolJob.bWorkBlob, oPoolJob.iWorkLen, oPoolJob.iTarget, pool_id);
