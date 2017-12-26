@@ -67,8 +67,6 @@ struct job_result
 		oss << ", ";
 		oss << "'iNonce': '" << iNonce << "' ";
 		oss << ", ";
-		oss << "'iSavedNonce': '" << iSavedNonce << "' ";
-		oss << ", ";
 		oss << "'sJobID': '" << buffer << "' ";
 		oss << ", ";
 		oss << "'bResult': '" << bResult << "' ";
