@@ -339,6 +339,10 @@ int tls_socket::recv(char* buf, unsigned int len)
 {
 	int ret = BIO_read(bio, buf, len);
 
+	std::string body;
+	body.assign(buf, len);
+	std::cout << "tls_socket::recv: " << body << std::endl;
+
 	if(ret == 0)
 		pCallback->set_socket_error("RECEIVE error: socket closed");
 	if(ret < 0)
@@ -349,11 +353,14 @@ int tls_socket::recv(char* buf, unsigned int len)
 
 bool tls_socket::send(const char* buf)
 {
+	std::string body(buf);
+	std::cout << "tls_socket::send: " << body << std::endl;
 	return BIO_puts(bio, buf) > 0;
 }
 
 void tls_socket::close(bool free)
 {
+	std::cout << "tls_socket::close: " << free << std::endl;
 	if(bio == nullptr || ssl == nullptr)
 		return;
 
