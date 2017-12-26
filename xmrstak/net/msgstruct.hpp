@@ -27,8 +27,6 @@ struct pool_job
 
 	std::string to_string() {
 		std::ostringstream oss;
-		std::string buffer;
-		buffer.assign(sJobID, sizeof(pool_job::sJobID));
 		oss << "pool_job:{ ";
 		oss << "'iTarget': '" << iTarget << "' ";
 		oss << ", ";
@@ -36,9 +34,15 @@ struct pool_job
 		oss << ", ";
 		oss << "'iSavedNonce': '" << iSavedNonce << "' ";
 		oss << ", ";
+
+		std::string buffer;
+		buffer.assign(sJobID, sizeof(pool_job::sJobID));
 		oss << "'sJobID': '" << buffer << "' ";
 		oss << ", ";
-		oss << "'bWorkBlob': '" << bWorkBlob << "' ";
+
+		buffer = std::string("");
+		buffer.assign((char*)bWorkBlob, sizeof(pool_job::bWorkBlob));
+		oss << "'bWorkBlob': '" << buffer << "' ";
 		oss << "}";
 		return oss.str();
 	}
@@ -60,16 +64,21 @@ struct job_result
 
 	std::string to_string() {
 		std::ostringstream oss;
-		std::string buffer;
-		buffer.assign(sJobID, sizeof(pool_job::sJobID));
+
 		oss << "job_result:{ ";
 		oss << "'iThreadId': '" << iThreadId << "' ";
 		oss << ", ";
 		oss << "'iNonce': '" << iNonce << "' ";
 		oss << ", ";
+
+		std::string buffer;
+		buffer.assign(sJobID, sizeof(job_result::sJobID));
 		oss << "'sJobID': '" << buffer << "' ";
 		oss << ", ";
-		oss << "'bResult': '" << bResult << "' ";
+
+		buffer = std::string("");
+		buffer.assign((char*)bResult, sizeof(job_result::bResult));
+		oss << "'bResult': '" << buffer << "' ";
 		oss << "}";
 		return oss.str();
 	}
