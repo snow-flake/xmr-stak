@@ -263,6 +263,13 @@ bool jpsock::jpsock_thd_main()
 
 bool jpsock::process_line(char* line, size_t len)
 {
+	std::string message;
+	message.assign(line, len);
+	std::ostringstream oss;
+	oss << "jpsock::process_line: " << message;
+	message = oss.str();
+	printer::inst()->print_msg(L1, message.c_str());
+
 	prv->jsonDoc.SetNull();
 	prv->parseAllocator.Clear();
 	prv->callAllocator.Clear();
@@ -359,6 +366,11 @@ bool jpsock::process_pool_job(const opq_json_val* params)
 {
 	if (!params->val->IsObject())
 		return set_socket_error("PARSE error: Job error 1");
+
+	std::ostringstream oss;
+	oss << "opq_json_val: " << params->val;
+	std::string message = oss.str();
+	printer::inst()->print_msg(L1, message.c_str());
 
 	const Value *blob, *jobid, *target, *motd;
 	jobid = GetObjectMember(*params->val, "job_id");
@@ -472,6 +484,11 @@ void jpsock::disconnect(bool quiet)
 
 bool jpsock::cmd_ret_wait(const char* sPacket, opq_json_val& poResult)
 {
+	std::ostringstream oss;
+	oss << "jpsock::cmd_ret_wait: " << sPacket;
+	std::string message = oss.str();
+	printer::inst()->print_msg(L1, message.c_str());
+
 	//printf("SEND: %s\n", sPacket);
 
 	/*Set up the call rsp for the call reply*/

@@ -42,7 +42,7 @@ struct pool_job
 
 		oss << "'bWorkBlob': '";
 		for (int i = 0; i <  sizeof(pool_job::bWorkBlob); i++) {
-			oss << char(bWorkBlob[i]);
+			oss << (bWorkBlob[i]);
 		}
 		oss << "' ";
 		oss << "}";
@@ -80,7 +80,7 @@ struct job_result
 
 		oss << "'bResult': '";
 		for (int i = 0; i <  sizeof(job_result::bResult); i++) {
-			oss << char(bResult[i]);
+			oss << (bResult[i]);
 		}
 		oss << "' ";
 		oss << "}";
