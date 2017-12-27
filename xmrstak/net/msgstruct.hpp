@@ -40,9 +40,11 @@ struct pool_job
 		oss << "'sJobID': '" << sJobID << "' ";
 		oss << ", \n";
 
-		buffer = std::string("");
-		buffer.assign((char*)bWorkBlob, sizeof(pool_job::bWorkBlob));
-		oss << "'bWorkBlob': '" << buffer << "' ";
+		oss << "'bWorkBlob': '";
+		for (int i = 0; i <  sizeof(pool_job::bWorkBlob); i++) {
+			oss << char(bWorkBlob[i]);
+		}
+		oss << "' ";
 		oss << "}";
 		return oss.str();
 	}
@@ -76,9 +78,11 @@ struct job_result
 		oss << "'sJobID': '" << buffer << "' ";
 		oss << ", \n";
 
-		buffer = std::string("");
-		buffer.assign((char*)bResult, sizeof(job_result::bResult));
-		oss << "'bResult': '" << buffer << "' ";
+		oss << "'bResult': '";
+		for (int i = 0; i <  sizeof(job_result::bResult); i++) {
+			oss << char(bResult[i]);
+		}
+		oss << "' ";
 		oss << "}";
 		return oss.str();
 	}
