@@ -65,7 +65,26 @@ namespace xmrstak
 namespace cpu
 {
 
-bool minethd::thd_setaffinity(std::thread::native_handle_type h, uint64_t cpu_id)
+
+	inline char hf_bin2hex(unsigned char c)
+	{
+		if (c <= 0x9)
+			return '0' + c;
+		else
+			return 'a' - 0xA + c;
+	}
+
+	inline void bin2hex(const unsigned char* in, unsigned int len, char* out)
+	{
+		for (unsigned int i = 0; i < len; i++)
+		{
+			out[i * 2] = hf_bin2hex((in[i] & 0xF0) >> 4);
+			out[i * 2 + 1] = hf_bin2hex(in[i] & 0x0F);
+		}
+	}
+
+
+	bool minethd::thd_setaffinity(std::thread::native_handle_type h, uint64_t cpu_id)
 {
 #if defined(__APPLE__)
 	thread_port_t mach_thread;
@@ -217,32 +236,91 @@ bool minethd::self_test()
 	if(mineMonero)
 	{
 		unsigned char out[32 * MAX_N];
+		memset(out, 0, sizeof(out));
+
+		char buffer[32 * MAX_N * 2];
+		memset(buffer, 0, sizeof(buffer));
+
 		cn_hash_fun hashf;
 		cn_hash_fun_multi hashf_multi;
 
-		hashf = func_selector(::jconf::inst()->HaveHardwareAes(), false, mineMonero);
-		hashf("This is a test", 14, out, ctx[0]);
+		const char * input = "0606d6ef8ed205ac3480614a522658372bd7974f83e9b1ec8c744ec3f9a0ab0b9a6de14942527d00000000bdd1db8d3e1755149156dbd70e648f12cf305456bda91caf7282f92dacb96d7715";
+
+//		hashf = func_selector(::jconf::inst()->HaveHardwareAes(), false, mineMonero);
+//		hashf("0606d6ef8ed205ac3480614a522658372bd7974f83e9b1ec8c744ec3f9a0ab0b9a6de14942527d00000000bdd1db8d3e1755149156dbd70e648f12cf305456bda91caf7282f92dacb96d7715", strlen("0606d6ef8ed205ac3480614a522658372bd7974f83e9b1ec8c744ec3f9a0ab0b9a6de14942527d00000000bdd1db8d3e1755149156dbd70e648f12cf305456bda91caf7282f92dacb96d7715"), out, ctx[0]);
+//		bin2hex(out, 32, buffer);
+//		std::cout << buffer << std::endl;
+//		bResult = memcmp(out, "52fae6cfeba4b10ba4929b3eab6734cdfec08a7e26ea9b5ef853c8d9c3500000", 32) == 0;
+
+//		hashf = func_selector(::jconf::inst()->HaveHardwareAes(), false, mineMonero);
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				bool bHaveAes = i == 1;
+				bool bNoPrefetch = j == 0;
+				std::cout << "bHaveAes:" << bHaveAes << ", bNoPrefetch:" << bNoPrefetch << std::endl;
+				hashf = func_selector(bHaveAes, bNoPrefetch, true);
+				hashf(input, strlen(input), out, ctx[0]);
+				// 5f8dcd4de70eb799079db8d9266d3f6d90e97f5ea10b5764adf1a95db50ce93b
+ //				bResult = memcmp(out, "\xa0\x84\xf0\x1d\x14\x37\xa0\x9c\x69\x85\x40\x1b\x60\xd4\x35\x54\xae\x10\x58\x02\xc5\xf5\xd8\xa9\xb3\x25\x36\x49\xc0\xbe\x66\x05", 32) == 0;
+
+				memset(buffer, 0, sizeof(buffer));
+				bin2hex(out, 32, buffer);
+				std::cout << input << std::endl;
+				std::cout << buffer << std::endl;
+
+				hashf_multi = func_multi_selector(2, bHaveAes, bNoPrefetch, true);
+				hashf(input, strlen(input), out, ctx[0]);
+				memset(buffer, 0, sizeof(buffer));
+				bin2hex(out, 64, buffer);
+				std::cout << buffer << std::endl;
+
+				hashf_multi = func_multi_selector(3, bHaveAes, bNoPrefetch, true);
+				hashf(input, strlen(input), out, ctx[0]);
+				memset(buffer, 0, sizeof(buffer));
+				bin2hex(out, 96, buffer);
+				std::cout << buffer << std::endl;
+
+				hashf_multi = func_multi_selector(4, bHaveAes, bNoPrefetch, true);
+				hashf(input, strlen(input), out, ctx[0]);
+				memset(buffer, 0, sizeof(buffer));
+				bin2hex(out, 128, buffer);
+				std::cout << buffer << std::endl;
+
+				hashf_multi = func_multi_selector(5, bHaveAes, bNoPrefetch, true);
+				hashf(input, strlen(input), out, ctx[0]);
+				memset(buffer, 0, sizeof(buffer));
+				bin2hex(out, 160, buffer);
+				std::cout << buffer << std::endl;
+			}
+		}
+		hashf = func_selector(false, true, true);
+		hashf("This is a test", 14, out, ctx[0]); // a084f01d1437a09c6985401b60d43554ae105802c5f5d8a9b3253649c0be6605
 		bResult = memcmp(out, "\xa0\x84\xf0\x1d\x14\x37\xa0\x9c\x69\x85\x40\x1b\x60\xd4\x35\x54\xae\x10\x58\x02\xc5\xf5\xd8\xa9\xb3\x25\x36\x49\xc0\xbe\x66\x05", 32) == 0;
+		memset(buffer, 0, sizeof(buffer)); bin2hex(out, 32, buffer); std::cout << buffer << std::endl;
 
 		hashf = func_selector(::jconf::inst()->HaveHardwareAes(), true, mineMonero);
 		hashf("This is a test", 14, out, ctx[0]);
 		bResult &= memcmp(out, "\xa0\x84\xf0\x1d\x14\x37\xa0\x9c\x69\x85\x40\x1b\x60\xd4\x35\x54\xae\x10\x58\x02\xc5\xf5\xd8\xa9\xb3\x25\x36\x49\xc0\xbe\x66\x05", 32) == 0;
+		memset(buffer, 0, sizeof(buffer)); bin2hex(out, 32, buffer); std::cout << buffer << std::endl;
 
 		hashf_multi = func_multi_selector(2, ::jconf::inst()->HaveHardwareAes(), false, mineMonero);
 		hashf_multi("The quick brown fox jumps over the lazy dogThe quick brown fox jumps over the lazy log", 43, out, ctx);
 		bResult &= memcmp(out, "\x3e\xbb\x7f\x9f\x7d\x27\x3d\x7c\x31\x8d\x86\x94\x77\x55\x0c\xc8\x00\xcf\xb1\x1b\x0c\xad\xb7\xff\xbd\xf6\xf8\x9f\x3a\x47\x1c\x59"
 				"\xb4\x77\xd5\x02\xe4\xd8\x48\x7f\x42\xdf\xe3\x8e\xed\x73\x81\x7a\xda\x91\xb7\xe2\x63\xd2\x91\x71\xb6\x5c\x44\x3a\x01\x2a\x41\x22", 64) == 0;
+		memset(buffer, 0, sizeof(buffer)); bin2hex(out, 64, buffer); std::cout << buffer << std::endl;
 
 		hashf_multi = func_multi_selector(2, ::jconf::inst()->HaveHardwareAes(), true, mineMonero);
 		hashf_multi("The quick brown fox jumps over the lazy dogThe quick brown fox jumps over the lazy log", 43, out, ctx);
 		bResult &= memcmp(out, "\x3e\xbb\x7f\x9f\x7d\x27\x3d\x7c\x31\x8d\x86\x94\x77\x55\x0c\xc8\x00\xcf\xb1\x1b\x0c\xad\xb7\xff\xbd\xf6\xf8\x9f\x3a\x47\x1c\x59"
 				"\xb4\x77\xd5\x02\xe4\xd8\x48\x7f\x42\xdf\xe3\x8e\xed\x73\x81\x7a\xda\x91\xb7\xe2\x63\xd2\x91\x71\xb6\x5c\x44\x3a\x01\x2a\x41\x22", 64) == 0;
+		memset(buffer, 0, sizeof(buffer)); bin2hex(out, 64, buffer); std::cout << buffer << std::endl;
 
 		hashf_multi = func_multi_selector(3, ::jconf::inst()->HaveHardwareAes(), false, mineMonero);
 		hashf_multi("This is a testThis is a testThis is a test", 14, out, ctx);
 		bResult &= memcmp(out, "\xa0\x84\xf0\x1d\x14\x37\xa0\x9c\x69\x85\x40\x1b\x60\xd4\x35\x54\xae\x10\x58\x02\xc5\xf5\xd8\xa9\xb3\x25\x36\x49\xc0\xbe\x66\x05"
 				"\xa0\x84\xf0\x1d\x14\x37\xa0\x9c\x69\x85\x40\x1b\x60\xd4\x35\x54\xae\x10\x58\x02\xc5\xf5\xd8\xa9\xb3\x25\x36\x49\xc0\xbe\x66\x05"
 				"\xa0\x84\xf0\x1d\x14\x37\xa0\x9c\x69\x85\x40\x1b\x60\xd4\x35\x54\xae\x10\x58\x02\xc5\xf5\xd8\xa9\xb3\x25\x36\x49\xc0\xbe\x66\x05", 96) == 0;
+		memset(buffer, 0, sizeof(buffer)); bin2hex(out, 96, buffer); std::cout << buffer << std::endl;
 
 		hashf_multi = func_multi_selector(4, ::jconf::inst()->HaveHardwareAes(), false, mineMonero);
 		hashf_multi("This is a testThis is a testThis is a testThis is a test", 14, out, ctx);
@@ -250,6 +328,7 @@ bool minethd::self_test()
 				"\xa0\x84\xf0\x1d\x14\x37\xa0\x9c\x69\x85\x40\x1b\x60\xd4\x35\x54\xae\x10\x58\x02\xc5\xf5\xd8\xa9\xb3\x25\x36\x49\xc0\xbe\x66\x05"
 				"\xa0\x84\xf0\x1d\x14\x37\xa0\x9c\x69\x85\x40\x1b\x60\xd4\x35\x54\xae\x10\x58\x02\xc5\xf5\xd8\xa9\xb3\x25\x36\x49\xc0\xbe\x66\x05"
 				"\xa0\x84\xf0\x1d\x14\x37\xa0\x9c\x69\x85\x40\x1b\x60\xd4\x35\x54\xae\x10\x58\x02\xc5\xf5\xd8\xa9\xb3\x25\x36\x49\xc0\xbe\x66\x05", 128) == 0;
+		memset(buffer, 0, sizeof(buffer)); bin2hex(out, 128, buffer); std::cout << buffer << std::endl;
 
 		hashf_multi = func_multi_selector(5, ::jconf::inst()->HaveHardwareAes(), false, mineMonero);
 		hashf_multi("This is a testThis is a testThis is a testThis is a testThis is a test", 14, out, ctx);
@@ -258,6 +337,9 @@ bool minethd::self_test()
 				"\xa0\x84\xf0\x1d\x14\x37\xa0\x9c\x69\x85\x40\x1b\x60\xd4\x35\x54\xae\x10\x58\x02\xc5\xf5\xd8\xa9\xb3\x25\x36\x49\xc0\xbe\x66\x05"
 				"\xa0\x84\xf0\x1d\x14\x37\xa0\x9c\x69\x85\x40\x1b\x60\xd4\x35\x54\xae\x10\x58\x02\xc5\xf5\xd8\xa9\xb3\x25\x36\x49\xc0\xbe\x66\x05"
 				"\xa0\x84\xf0\x1d\x14\x37\xa0\x9c\x69\x85\x40\x1b\x60\xd4\x35\x54\xae\x10\x58\x02\xc5\xf5\xd8\xa9\xb3\x25\x36\x49\xc0\xbe\x66\x05", 160) == 0;
+		memset(buffer, 0, sizeof(buffer)); bin2hex(out, 160, buffer); std::cout << buffer << std::endl;
+
+		bResult = false;
 	}
 
 	for (int i = 0; i < MAX_N; i++)
